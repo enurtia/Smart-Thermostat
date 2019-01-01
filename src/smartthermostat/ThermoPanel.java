@@ -349,7 +349,6 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
             menu = false;
             repaint();
             controller.set(option, tempTarget);
-            System.out.println("Temp set " + option + " heat, fan, cool, off");
         }
     }
 
