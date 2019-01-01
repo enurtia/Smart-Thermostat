@@ -370,7 +370,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         
     }
     
-        @Override
+    @Override
     public void mouseMoved(MouseEvent e)
     {
         
