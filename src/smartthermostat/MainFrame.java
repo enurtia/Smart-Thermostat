@@ -18,7 +18,7 @@ public class MainFrame extends JFrame
             @Override
             public void windowClosing(WindowEvent e)
             {
-                panel.closeGpio();
+                panel.close();
             }
         });
     }

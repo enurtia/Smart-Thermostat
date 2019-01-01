@@ -5,7 +5,7 @@ import javax.swing.Timer;
 public class TempController
 {
     RelayController handler;
-    TempSensor sensor;
+    //TempSensor sensor;
     
     private Timer timer;
     private final double tolerance = 2; //Tolerance of temperature(in degrees) after reaching tempTarget.
@@ -21,17 +21,14 @@ public class TempController
     public TempController(Timer tempTimer)
     {
         handler = new RelayController();
-        sensor = new TempSensor();
         
         option = "off";
         timer = tempTimer;
     }
     
-    public void tick()
+    public void tick(int temp)
     {
         //For cooling and heating
-        double temp = sensor.getTemp();
-        
         if(option.equals("heat"))
         {
             if(temp >= tempTarget && !toleranceActive)
@@ -59,8 +56,6 @@ public class TempController
                 toleranceActive = true;
             }
         }
-        
-        check("activePerformed");
     }
     
     public void set(int opt, float temp)
@@ -99,7 +94,6 @@ public class TempController
                 disableAll();
             }
             
-            check("pub void set, if option.equals");        // 
         }
         else
         {
@@ -127,7 +121,6 @@ public class TempController
             }
             
             timer.start();
-            check("pub void set, if option.equals else");   //
         }
     }       
     
@@ -145,13 +138,11 @@ public class TempController
         {
             handler.fan(true);
             fanActive = true;
-            check("setFan active");                         //
         }
         else
         {
             handler.fan(false);
             fanActive = false;
-            check("setFan active else");                    //
         }
     }
     
@@ -162,13 +153,11 @@ public class TempController
         {
             handler.cool(true);
             coolActive = true;
-            check("setCool active");                        //
         }
         else
         {
             handler.cool(false);
             coolActive = false;
-            check("setCool active else");                   //
         }
     }
     
@@ -179,38 +168,15 @@ public class TempController
         {
             handler.heat(true);
             heatActive = true;
-            check("setHeat active");                        //
         }
         else
         {
             handler.heat(false);
             heatActive = false; 
-            check("setHeat active else");                   //
         }
     }
     
-    private void check(String s)    //Delete after testing  //
-    {
-        if((heatActive && coolActive) || (fanActive && coolActive) || (fanActive && heatActive))
-        {
-            System.out.println("heat && cool: " + (heatActive && coolActive));
-            System.out.println("fan && cool: " + (fanActive && coolActive));
-            System.out.println("fan && heat: " + (fanActive && heatActive));
-            
-            disableAll();
-            timer.stop();
-            try
-            {
-                throw new Exception("Two relays running at once. -- " + s);
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    public void closeGpio()
+    public void close()
     {
         handler.closeGpio();
     }

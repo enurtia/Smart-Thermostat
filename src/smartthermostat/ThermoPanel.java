@@ -24,6 +24,7 @@ import javax.swing.Timer;
 public class ThermoPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {
     TempController controller;
+    TempSensor sensor;
     
     private Timer spinTimer;
     private Timer tempTimer;
@@ -53,7 +54,8 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
     private Image[] options;
     
     private final Font tempFont = new Font("sansserif", Font.BOLD, 52);
-    private float temp;
+    private float tempTarget;
+    private double ambientTemp;
     
     public ThermoPanel()
     {
@@ -67,7 +69,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         yS = y;
         direction = 1;
         
-        temp = 70;   //Temperature, in Fahrenheit
+        tempTarget = 70;   //Temperature, in Fahrenheit
         
         menuPoint = new Point();
         option = 4;
@@ -126,9 +128,9 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         g1.draw(ring);
         g1.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
             
-        if(temp > 65 && temp < 85)  //Set ring color depending on temperature
+        if(tempTarget > 65 && tempTarget < 85)  //Set ring color depending on temperature
         {
-            ringColor = new Color(Math.abs(65-temp)*(1f/20), 0, Math.abs(85-temp)*(1f/20));
+            ringColor = new Color(Math.abs(65-tempTarget)*(1f/20), 0, Math.abs(85-tempTarget)*(1f/20));
         }
         g1.setColor(ringColor);
         g1.fill(ring);
@@ -140,8 +142,14 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         //Temperature
         g1.setColor(Color.BLACK);
         g1.setFont(tempFont);
-        g1.drawString(String.valueOf((int)temp + "°F"), x - (111 / 2),  y + (67/4));    ///x and y adjusted for specific height and width of font.
-        
+        if(slideable)
+        {
+            g1.drawString(String.valueOf((int)tempTarget + "°F"), x - (111 / 2),  y + (67/4));//x and y adjusted for specific height and width of font.
+        }
+        else
+        {
+            g1.drawString(String.valueOf((int)ambientTemp + "°F"), x - (111 / 2),  y + (67/4));
+        }
         //Menu
         if(menu)
         {
@@ -186,7 +194,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
             else
             {
                 spinTimer.stop();
-                controller.set(option, temp);
+                controller.set(option, tempTarget);
             }
             double r2 = r - (thickness/2);
             
@@ -198,7 +206,8 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         }
         else if(tempTimer.isRunning())
         {
-            controller.tick();
+            ambientTemp = sensor.getTemp();
+            controller.tick((int)ambientTemp);
         }
     }
     
@@ -228,7 +237,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
                 {
                     deltaT = 0;
                 }
-                temp -= deltaT;
+                tempTarget -= deltaT;
 
                 direction = (deltaT > 0) ? 1 : -1;
 
@@ -336,13 +345,14 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         {
             menu = false;
             repaint();
-            controller.set(option, temp);
+            controller.set(option, tempTarget);
         }
     }
 
-    public void closeGpio()
+    public void close()
     {
-        controller.closeGpio();
+        sensor.closeBus();
+        controller.close();
     }
     
     @Override
