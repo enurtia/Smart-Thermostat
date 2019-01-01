@@ -63,6 +63,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         addMouseMotionListener(this);
         
         tempTimer = new Timer(5000, this);
+        tempTimer.start();
         controller = new TempController(tempTimer);
         sensor = new TempSensor();
         
@@ -207,7 +208,6 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         else if(tempTimer.isRunning())
         {
             ambientTemp = sensor.getTemp();
-            System.out.println("ambient temp set");
             controller.tick((int)ambientTemp);
         }
         
