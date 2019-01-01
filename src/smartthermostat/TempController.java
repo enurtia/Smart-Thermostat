@@ -5,9 +5,7 @@ import javax.swing.Timer;
 public class TempController
 {
     RelayController handler;
-    //TempSensor sensor;
     
-    private Timer timer;
     private final double tolerance = 2; //Tolerance of temperature(in degrees) after reaching tempTarget.
     private boolean toleranceActive;
     
@@ -23,7 +21,6 @@ public class TempController
         handler = new RelayController();
         
         option = "off";
-        timer = tempTimer;
     }
     
     public void tick(int temp)
@@ -80,11 +77,6 @@ public class TempController
         
         if(option.equals("fan") || option.equals("off"))
         {
-            if(timer.isRunning())
-            {
-                timer.stop();
-            }
-            
             if(option.equals("fan"))
             {
                 setFan(true);
@@ -119,8 +111,6 @@ public class TempController
                     setFan(false);
                 }
             }
-            
-            timer.start();
         }
     }       
     

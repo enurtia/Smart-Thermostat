@@ -64,6 +64,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         
         tempTimer = new Timer(5000, this);
         controller = new TempController(tempTimer);
+        sensor = new TempSensor();
         
         xS = x;
         yS = y;
@@ -194,6 +195,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
             else
             {
                 spinTimer.stop();
+                tempTimer.start();
                 controller.set(option, tempTarget);
             }
             double r2 = r - (thickness/2);
