@@ -38,7 +38,7 @@ public class TempController
                 setHeat(true);
                 toleranceActive = false;
             }
-            else if(!toleranceActive)
+            else if(!toleranceActive && temp < tempTarget)
             {
                 setHeat(true);
             }
@@ -55,7 +55,7 @@ public class TempController
                 setCool(true);
                 toleranceActive = true;
             }
-            else if(!toleranceActive)
+            else if(!toleranceActive && temp > tempTarget)
             {
                 setCool(true);
             }
