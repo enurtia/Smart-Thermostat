@@ -38,7 +38,10 @@ public class TempController
                 setHeat(true);
                 toleranceActive = false;
             }
-            
+            else if(!toleranceActive)
+            {
+                setHeat(true);
+            }
         }
         else if(option.equals("cool"))
         {
@@ -49,8 +52,12 @@ public class TempController
             }
             else if(toleranceActive && (temp - tempTarget) >= tolerance)
             {
-                setHeat(true);
+                setCool(true);
                 toleranceActive = true;
+            }
+            else if(!toleranceActive)
+            {
+                setCool(true);
             }
         }
     }
@@ -75,41 +82,35 @@ public class TempController
         
         tempTarget = temp;
         
-        if(option.equals("fan") || option.equals("off"))
+
+        if(option.equals("fan"))
         {
-            if(option.equals("fan"))
-            {
-                setFan(true);
-            }
-            else if(option.equals("off"))
-            {
-                disableAll();
-            }
-            
+            setFan(true);
         }
-        else
+        else if(option.equals("off"))
         {
-            if(option.equals("heat"))
+            disableAll();
+        }
+        else if(option.equals("heat"))
+        {
+            if(coolActive)
             {
-                if(coolActive)
-                {
-                    setCool(false);
-                }
-                else if(fanActive)
-                {
-                    setFan(false);
-                }
+                setCool(false);
             }
-            else if(option.equals("cool"))
+            else if(fanActive)
             {
-                if(heatActive)
-                {
-                    setHeat(false);
-                }
-                else if(fanActive)
-                {
-                    setFan(false);
-                }
+                setFan(false);
+            }
+        }
+        else if(option.equals("cool"))
+        {
+            if(heatActive)
+            {
+                setHeat(false);
+            }
+            else if(fanActive)
+            {
+                setFan(false);
             }
         }
     }       
