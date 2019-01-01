@@ -39,7 +39,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
     
     private int xS; //Slider X
     private int yS; //Slider Y
-    private boolean slideable;
+    private boolean slider;
     private double alpha;
     private double ang;
     private double direction;
@@ -143,7 +143,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         //Temperature
         g1.setColor(Color.BLACK);
         g1.setFont(tempFont);
-        if(slideable)
+        if(slider)
         {
             g1.drawString(String.valueOf((int)tempTarget + "°F"), x - (111 / 2),  y + (67/4));//x and y adjusted for specific height and width of font.
         }
@@ -203,14 +203,15 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
             ang -= 0.09 * direction;    
             xS = (int) ((r2 * Math.cos(ang)) + x);
             yS = (int) ((r2 * Math.sin(ang)) + y);
-            
-            repaint();
         }
         else if(tempTimer.isRunning())
         {
             ambientTemp = sensor.getTemp();
+            System.out.println("ambient temp set");
             controller.tick((int)ambientTemp);
         }
+        
+        repaint();
     }
     
     @Override
@@ -219,7 +220,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
         //To clean up code later, create a slider object
         //which holds all info about slider, such as xS, xY,
         //ang, etc.
-        if(slideable)
+        if(slider)
         {
             double x1 = e.getX();
             double y1 = e.getY();
@@ -322,7 +323,7 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
                 spinTimer.stop();
             }
             
-            slideable = true;
+            slider = true;
             alpha = 201;
         }
         else
@@ -336,9 +337,9 @@ public class ThermoPanel extends JPanel implements ActionListener, MouseListener
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        if(slideable)
+        if(slider)
         {
-            slideable = false;
+            slider = false;
             tempTimer.stop();
             spinTimer.start();
         }
